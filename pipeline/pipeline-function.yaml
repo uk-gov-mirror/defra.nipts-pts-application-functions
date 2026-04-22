@@ -55,16 +55,11 @@ extends:
     connectionStrings: '[{"name": "sql_db", "value": "Server=tcp:$(sqlServerName),1433;Database=pet-travel;Authentication=Active Directory Managed Identity;", "type": "SQLAzure", "slotSetting": false}]'    
     #runHealthCheck: false
     appSettingsEnv:
-      dev: >-
-        -FUNCTIONS_INPROC_NET8_ENABLED "1"
-      snd: >-
-        -FUNCTIONS_INPROC_NET8_ENABLED "1"
-      tst: >-
-        -FUNCTIONS_INPROC_NET8_ENABLED "1"
-      pre: >-
-        -FUNCTIONS_INPROC_NET8_ENABLED "1"
-      prd: >-
-        -FUNCTIONS_INPROC_NET8_ENABLED "1"
+      dev: ""
+      snd: ""
+      tst: ""
+      pre: ""
+      prd: ""
     skipBuildTests: false
     #qualityGate: ${{ parameters.qualityGate }}
     runIntegrationTests: false

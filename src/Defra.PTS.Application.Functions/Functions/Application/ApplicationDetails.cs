@@ -2,8 +2,7 @@ using Defra.PTS.Application.Api.Services.Interface;
 using Defra.PTS.Application.Models.CustomException;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
@@ -51,7 +50,7 @@ namespace Defra.PTS.Application.Functions.Functions.Application
         /// <param name="req">The HTTP request</param>    
         /// <returns>The application details</returns>
         /// <exception cref="ApplicationFunctionException">Thrown when the application ID input is invalid</exception>
-        [FunctionName("GetApplicationDetails")]
+        [Function("GetApplicationDetails")]
         [OpenApiOperation(operationId: "GetApplicationDetails", tags: _getApplicationDetailsTag)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(applicationModel.ApplicationDetail), Description = "Get Application Details")]
