@@ -55,11 +55,16 @@ extends:
     connectionStrings: '[{"name": "sql_db", "value": "Server=tcp:$(sqlServerName),1433;Database=pet-travel;Authentication=Active Directory Managed Identity;", "type": "SQLAzure", "slotSetting": false}]'    
     #runHealthCheck: false
     appSettingsEnv:
-      dev: ""
-      snd: ""
-      tst: ""
-      pre: ""
-      prd: ""
+      dev: >-
+        -FUNCTIONS_WORKER_RUNTIME "dotnet-isolated"
+      snd: >-
+        -FUNCTIONS_WORKER_RUNTIME "dotnet-isolated"
+      tst: >-
+        -FUNCTIONS_WORKER_RUNTIME "dotnet-isolated"
+      pre: >-
+        -FUNCTIONS_WORKER_RUNTIME "dotnet-isolated"
+      prd: >-
+        -FUNCTIONS_WORKER_RUNTIME "dotnet-isolated"
     skipBuildTests: false
     #qualityGate: ${{ parameters.qualityGate }}
     runIntegrationTests: false
