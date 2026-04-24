@@ -1,6 +1,6 @@
 using Defra.PTS.Application.Api.Services.Configuration;
 using Defra.PTS.Application.Functions.Configuration;
-using Microsoft.AspNetCore.Http.Json;
+reusing Microsoft.AspNetCore.Http.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
