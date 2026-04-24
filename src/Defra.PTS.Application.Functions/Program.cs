@@ -1,5 +1,6 @@
 using Defra.PTS.Application.Api.Services.Configuration;
 using Defra.PTS.Application.Functions.Configuration;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,11 @@ namespace Defra.PTS.Application.Functions
                 .ConfigureFunctionsWebApplication()
                 .ConfigureServices((context, services) =>
                 {
+                    services.Configure<JsonOptions>(options =>
+                    {
+                        options.SerializerOptions.PropertyNamingPolicy = null;
+                    });
+
                     var configuration = context.Configuration;
                     var connection = string.Empty;
 #if DEBUG
