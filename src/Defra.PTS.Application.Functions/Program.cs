@@ -9,9 +9,15 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Defra.PTS.Application.Functions
 {
+    /// <summary>
+    /// Application entry point.
+    /// </summary>
     [ExcludeFromCodeCoverage]
-    public class Program
+    public static class Program
     {
+        /// <summary>
+        /// Configures and runs the Azure Functions host.
+        /// </summary>
         public static void Main()
         {
             var host = new HostBuilder()
