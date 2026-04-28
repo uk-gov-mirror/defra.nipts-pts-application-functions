@@ -2,8 +2,7 @@ using Defra.PTS.Application.Api.Services.Interface;
 using Defra.PTS.Application.Models.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
@@ -34,7 +33,7 @@ public class GetUserApplications(IApplicationService applicationService, ILogger
     /// <param name="req"></param>
     /// <param name="userId"></param>
     /// <returns></returns>
-    [FunctionName(nameof(GetUserApplications))]
+    [Function(nameof(GetUserApplications))]
     [OpenApiOperation(operationId: nameof(GetUserApplications), tags: "Applications")]
     [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
     [OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **UserId** parameter")]

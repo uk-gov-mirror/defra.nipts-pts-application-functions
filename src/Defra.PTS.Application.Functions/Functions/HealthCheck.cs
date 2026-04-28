@@ -1,16 +1,11 @@
-using System;
-using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Defra.PTS.Application.Api.Services.Interface;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using System.Net;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Defra.PTS.Application.Api.Services.Interface;
 
 namespace Defra.PTS.Functions.Functions
 {
@@ -21,26 +16,26 @@ namespace Defra.PTS.Functions.Functions
     /// Health check dependancies
     /// </remarks>
     /// <param name="applicationService"></param>
-    public class HealthCheck(IApplicationService applicationService)
+    /// <param name="logger"></param>
+    public class HealthCheck(IApplicationService applicationService, ILogger<HealthCheck> logger)
     {
         private readonly IApplicationService _applicationService = applicationService;
+        private readonly ILogger<HealthCheck> _logger = logger;
 
         /// <summary>
         /// Check service health
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="log"></param>
         /// <returns></returns>
-        [FunctionName("HealthCheck")]
+        [Function("HealthCheck")]
         [OpenApiOperation(operationId: "Run", tags: "name")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
 #pragma warning disable IDE0060 // Remove unused parameter
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequest req
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequest req)
 #pragma warning restore IDE0060 // Remove unused parameter
-            , ILogger log)
         {
-            log.LogInformation("Health Check Trigger.");
+            _logger.LogInformation("Health Check Trigger.");
 
             // Perform health check logic here
             bool isHealthy = await _applicationService.PerformHealthCheckLogic();

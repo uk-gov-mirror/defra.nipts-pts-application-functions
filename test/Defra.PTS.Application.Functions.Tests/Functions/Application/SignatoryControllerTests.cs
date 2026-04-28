@@ -1,4 +1,4 @@
-﻿using Defra.PTS.Application.Api.Services.Interface;
+using Defra.PTS.Application.Api.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -25,7 +25,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
         {
             _signatoryServiceMock = new Mock<ISignatoryService>();
             _loggerMock = new Mock<ILogger<SignatoryController>>();
-            sut = new SignatoryController(_signatoryServiceMock.Object);
+            sut = new SignatoryController(_signatoryServiceMock.Object, _loggerMock.Object);
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             _signatoryServiceMock.Setup(service => service.GetLatestSignatory()).ReturnsAsync(signatoryDto);
 
             // Act
-            var result = await sut!.GetLatestSignatory(new DefaultHttpContext().Request, _loggerMock.Object);
+            var result = await sut!.GetLatestSignatory(new DefaultHttpContext().Request);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -68,7 +68,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             _signatoryServiceMock.Setup(service => service.GetCurrentSignatory()).ReturnsAsync(signatoryDto);
 
             // Act
-            var result = await sut!.GetCurrentSignatory(new DefaultHttpContext().Request, _loggerMock.Object);
+            var result = await sut!.GetCurrentSignatory(new DefaultHttpContext().Request);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -83,7 +83,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             _signatoryServiceMock.Setup(service => service.GetLatestSignatory()).ReturnsAsync((SignatoryDto?)null);
 
             // Act
-            var result = await sut!.GetLatestSignatory(new DefaultHttpContext().Request, _loggerMock.Object);
+            var result = await sut!.GetLatestSignatory(new DefaultHttpContext().Request);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -98,7 +98,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             _signatoryServiceMock.Setup(service => service.GetCurrentSignatory()).ReturnsAsync((SignatoryDto?)null);
 
             // Act
-            var result = await sut!.GetCurrentSignatory(new DefaultHttpContext().Request, _loggerMock.Object);
+            var result = await sut!.GetCurrentSignatory(new DefaultHttpContext().Request);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -115,10 +115,9 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
                 .ThrowsAsync(new Exception("Service exception"));
 
             var mockHttpRequest = new Mock<HttpRequest>();
-            var mockLogger = new Mock<ILogger>();
 
             // Act
-            var result = await sut!.GetLatestSignatory(mockHttpRequest.Object, _loggerMock.Object);
+            var result = await sut!.GetLatestSignatory(mockHttpRequest.Object);
 
             // Assert
             Assert.IsInstanceOf<StatusCodeResult>(result); // Verify the result is of the correct type
@@ -136,10 +135,9 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
                 .ThrowsAsync(new Exception("Service exception"));
 
             var mockHttpRequest = new Mock<HttpRequest>();
-            var mockLogger = new Mock<ILogger>();
 
             // Act
-            var result = await sut!.GetCurrentSignatory(mockHttpRequest.Object, _loggerMock.Object);
+            var result = await sut!.GetCurrentSignatory(mockHttpRequest.Object);
 
             // Assert
             Assert.IsInstanceOf<StatusCodeResult>(result); // Verify the result is of the correct type
@@ -169,7 +167,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryById(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryById(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -189,7 +187,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryById(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryById(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -209,7 +207,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryById(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryById(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
@@ -229,7 +227,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryById(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryById(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
@@ -250,7 +248,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryById(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryById(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
@@ -270,7 +268,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryById(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryById(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<StatusCodeResult>(result); // Verify the result is of the correct type
@@ -300,7 +298,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryByName(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryByName(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -320,7 +318,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryByName(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryByName(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -340,7 +338,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryByName(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryByName(httpRequest);
 
             // Assert
             // Assert
@@ -361,7 +359,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryByName(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryByName(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
@@ -381,7 +379,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryByName(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryByName(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
@@ -401,7 +399,7 @@ namespace Defra.PTS.Application.Functions.Tests.Controllers
             httpRequest.Body = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(requestBody));
 
             // Act
-            var result = await sut!.GetSignatoryByName(httpRequest, _loggerMock.Object);
+            var result = await sut!.GetSignatoryByName(httpRequest);
 
             // Assert
             Assert.IsInstanceOf<StatusCodeResult>(result); // Verify the result is of the correct type
