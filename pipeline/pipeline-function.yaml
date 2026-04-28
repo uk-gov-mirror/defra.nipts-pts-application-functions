@@ -45,7 +45,6 @@ extends:
     appProject: PTS
     sqlProject: TRS
     appType: 'functionApp'
-    dotnetVersion: '10.0'
     appInstanceNumber: $(nc-region-id)01
     scr: GH
     buildProjects: |
