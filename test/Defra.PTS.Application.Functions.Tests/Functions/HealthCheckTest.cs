@@ -16,7 +16,7 @@ namespace Defra.PTS.Application.Functions.Tests.Functions
     public class HealthCheckTest
     {
         private Mock<HttpRequest> requestMoq = new();
-        private Mock<ILogger> loggerMock = new();
+        private Mock<ILogger<HealthCheck>> loggerMock = new();
         private Mock<IApplicationService> applicationServiceMoq = new();
         HealthCheck? sut;
 
@@ -24,10 +24,10 @@ namespace Defra.PTS.Application.Functions.Tests.Functions
         public void SetUp()
         {
             requestMoq = new Mock<HttpRequest>();
-            loggerMock = new Mock<ILogger>();
+            loggerMock = new Mock<ILogger<HealthCheck>>();
             applicationServiceMoq = new Mock<IApplicationService>();
 
-            sut = new HealthCheck(applicationServiceMoq.Object);
+            sut = new HealthCheck(applicationServiceMoq.Object, loggerMock.Object);
         }
 
         [TearDown]
@@ -44,10 +44,10 @@ namespace Defra.PTS.Application.Functions.Tests.Functions
         public void HealthCheck_WhenTrue_Then_ReturnsServiceAvailable()
         {
             applicationServiceMoq.Setup(a => a.PerformHealthCheckLogic()).Returns(Task.FromResult(true));
-            var result = sut!.Run(requestMoq.Object, loggerMock.Object);
+            var result = sut!.Run(requestMoq.Object);
             var okResult = result.Result as OkResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(200, okResult?.StatusCode);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(okResult?.StatusCode, Is.EqualTo(200));
             applicationServiceMoq.Verify(a => a.PerformHealthCheckLogic(), Times.Once);
         }
 
@@ -55,10 +55,10 @@ namespace Defra.PTS.Application.Functions.Tests.Functions
         public void HealthCheck_WhenFalse_Then_ReturnsServiceUnavailable()
         {
             applicationServiceMoq.Setup(a => a.PerformHealthCheckLogic()).Returns(Task.FromResult(false));
-            var result = sut!.Run(requestMoq.Object, loggerMock.Object);
+            var result = sut!.Run(requestMoq.Object);
             var okResult = result.Result as StatusCodeResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(503, okResult?.StatusCode);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(okResult?.StatusCode, Is.EqualTo(503));
             applicationServiceMoq.Verify(a => a.PerformHealthCheckLogic(), Times.Once);
         }
 

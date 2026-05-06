@@ -7,8 +7,7 @@ using Defra.PTS.Application.Api.Services.Interface;
 using Defra.PTS.Application.Models.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
@@ -22,6 +21,7 @@ namespace Defra.PTS.Application.Functions.Application
     public class SignatoryController
     {
         private readonly ISignatoryService _signatoryService;
+        private readonly ILogger<SignatoryController> _logger;
         private const string InvalidRequestBodyMessage = "Invalid request body, is NULL or Empty";
         private const string ExceptionOccurredMessage = "An exception occurred";
 
@@ -39,22 +39,23 @@ namespace Defra.PTS.Application.Functions.Application
         /// Initializes a new instance of the <see cref="SignatoryController"/> class.
         /// </summary>
         /// <param name="signatoryService">The signatory service.</param>
-        public SignatoryController(ISignatoryService signatoryService)
+        /// <param name="logger">The logger.</param>
+        public SignatoryController(ISignatoryService signatoryService, ILogger<SignatoryController> logger)
         {
             _signatoryService = signatoryService;
+            _logger = logger;
         }
 
         /// <summary>
         /// Retrieves the latest signatory.
         /// </summary>
         /// <returns>The latest signatory information.</returns>
-        [FunctionName("GetLatestSignatory")]
+        [Function("GetLatestSignatory")]
         [OpenApiOperation(operationId: "GetLatestSignatory", tags: SignatoryLatestTagName)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SignatoryDto), Description = "OK")]
         public async Task<IActionResult> GetLatestSignatory(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "signatories/latest")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "signatories/latest")] HttpRequest req)
         {
             try
             {
@@ -63,7 +64,7 @@ namespace Defra.PTS.Application.Functions.Application
             }
             catch (Exception ex)
             {
-                log.LogError(ex, ExceptionOccurredMessage);
+                _logger.LogError(ex, ExceptionOccurredMessage);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -72,13 +73,12 @@ namespace Defra.PTS.Application.Functions.Application
         /// Retrieves the current signatory.
         /// </summary>
         /// <returns>The current signatory information.</returns>
-        [FunctionName("GetCurrentSignatory")]
+        [Function("GetCurrentSignatory")]
         [OpenApiOperation(operationId: "GetCurrentSignatory", tags: SignatoryCurrentTagName)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SignatoryDto), Description = "OK")]
         public async Task<IActionResult> GetCurrentSignatory(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "signatories/current")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "signatories/current")] HttpRequest req)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace Defra.PTS.Application.Functions.Application
             }
             catch (Exception ex)
             {
-                log.LogError(ex, ExceptionOccurredMessage);
+                _logger.LogError(ex, ExceptionOccurredMessage);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -96,14 +96,13 @@ namespace Defra.PTS.Application.Functions.Application
         /// Retrieves a signatory by ID.
         /// </summary>
         /// <returns>The signatory information.</returns>
-        [FunctionName("GetSignatoryById")]
+        [Function("GetSignatoryById")]
         [OpenApiOperation(operationId: "GetSignatoryById", tags: SignatoryIdTagName)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SignatoryRequestIdDto), Description = "Signatory request data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SignatoryDto), Description = "OK")]
         public async Task<IActionResult> GetSignatoryById(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "signatories/getbyid")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "signatories/getbyid")] HttpRequest req)
         {
             try
             {
@@ -123,17 +122,17 @@ namespace Defra.PTS.Application.Functions.Application
             }
             catch (InvalidDataException ex)
             {
-                log.LogError(ex, ExceptionOccurredMessage);
+                _logger.LogError(ex, ExceptionOccurredMessage);
                 return new BadRequestObjectResult(InvalidRequestBodyMessage);
             }
             catch (JsonException ex)
             {
-                log.LogError(ex, ExceptionOccurredMessage);
+                _logger.LogError(ex, ExceptionOccurredMessage);
                 return new BadRequestObjectResult("Cannot deserialize request body or Id is missing");
             }
             catch (Exception ex)
             {
-                log.LogError(ex, ExceptionOccurredMessage);
+                _logger.LogError(ex, ExceptionOccurredMessage);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -142,14 +141,13 @@ namespace Defra.PTS.Application.Functions.Application
         /// Retrieves a signatory by name.
         /// </summary>
         /// <returns>The signatory information.</returns>
-        [FunctionName("GetSignatoryByName")]
+        [Function("GetSignatoryByName")]
         [OpenApiOperation(operationId: "GetSignatoryByName", tags: SignatoryNameTagName)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SignatoryRequestNameDto), Description = "Signatory request data")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SignatoryDto), Description = "OK")]
         public async Task<IActionResult> GetSignatoryByName(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "signatories/byname")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "signatories/byname")] HttpRequest req)
         {
             try
             {
@@ -169,17 +167,17 @@ namespace Defra.PTS.Application.Functions.Application
             }
             catch (InvalidDataException ex)
             {
-                log.LogError(ex, ExceptionOccurredMessage);
+                _logger.LogError(ex, ExceptionOccurredMessage);
                 return new BadRequestObjectResult(InvalidRequestBodyMessage);
             }
             catch (JsonException ex)
             {
-                log.LogError(ex, ExceptionOccurredMessage);
+                _logger.LogError(ex, ExceptionOccurredMessage);
                 return new BadRequestObjectResult("Cannot deserialize request body or Name is missing");
             }
             catch (Exception ex)
             {
-                log.LogError(ex, ExceptionOccurredMessage);
+                _logger.LogError(ex, ExceptionOccurredMessage);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

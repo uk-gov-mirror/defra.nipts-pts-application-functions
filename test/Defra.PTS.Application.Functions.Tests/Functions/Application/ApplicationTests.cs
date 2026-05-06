@@ -20,7 +20,7 @@ namespace Defra.PTS.Application.Functions.Tests.Functions.Application
     public class ApplicationTests
     {
         private Mock<HttpRequest> requestMoq = new();
-        private Mock<ILogger> loggerMock = new();
+        private Mock<ILogger<PTS.Application.Functions.Functions.Application.Application>> loggerMock = new();
         private Mock<IApplicationService> applicationServiceMoq = new();
         private Mock<ITravelDocumentService> travelDocumentServiceMoq = new();
         PTS.Application.Functions.Functions.Application.Application? sut;
@@ -29,11 +29,11 @@ namespace Defra.PTS.Application.Functions.Tests.Functions.Application
         public void SetUp()
         {
             requestMoq = new Mock<HttpRequest>();
-            loggerMock = new Mock<ILogger>();
+            loggerMock = new Mock<ILogger<PTS.Application.Functions.Functions.Application.Application>>();
             applicationServiceMoq = new Mock<IApplicationService>();
             travelDocumentServiceMoq = new Mock<ITravelDocumentService>();
 
-            sut = new PTS.Application.Functions.Functions.Application.Application(applicationServiceMoq.Object, travelDocumentServiceMoq.Object);
+            sut = new PTS.Application.Functions.Functions.Application.Application(applicationServiceMoq.Object, travelDocumentServiceMoq.Object, loggerMock.Object);
         }
 
         [TearDown]
@@ -50,13 +50,13 @@ namespace Defra.PTS.Application.Functions.Tests.Functions.Application
         public async Task CreateApplication_WhenRequestDoesntExist_Then_ReturnsUserException()
         {
             var expectedResult = $"Error creating application";
-            var result = await sut!.CreateApplication(null, loggerMock.Object);
+            var result = await sut!.CreateApplication(null);
 
             var badRequestResult = result as BadRequestObjectResult;
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(badRequestResult);
-            Assert.IsNotNull(result);
-            Assert.AreEqual(expectedResult, badRequestResult!.Value);
+            Assert.That(badRequestResult, Is.InstanceOf<BadRequestObjectResult>());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(badRequestResult!.Value, Is.EqualTo(expectedResult));
         }
 
         [Test]
@@ -74,11 +74,11 @@ namespace Defra.PTS.Application.Functions.Tests.Functions.Application
 
             applicationServiceMoq.Setup(a => a.CreateApplication(It.IsAny<Entities.Application>())).Returns(app);
 
-            var result = sut!.CreateApplication(requestMoq.Object, loggerMock.Object);
+            var result = sut!.CreateApplication(requestMoq.Object);
             var okResult = result.Result as OkObjectResult;
 
-            Assert.IsNotNull(okResult);
-            Assert.AreEqual(200, okResult?.StatusCode);          
+            Assert.That(okResult, Is.Not.Null);
+            Assert.That(okResult?.StatusCode, Is.EqualTo(200));
 
             applicationServiceMoq.Verify(a => a.CreateApplication(It.IsAny<Entities.Application>()), Times.Once);
         }
