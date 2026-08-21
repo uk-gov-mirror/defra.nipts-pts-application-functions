@@ -1,4 +1,5 @@
-﻿using Defra.PTS.Application.Repositories.Interfaces;
+﻿using Defra.PTS.Application.Models.CustomException;
+using Defra.PTS.Application.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 
@@ -54,7 +55,13 @@ namespace Defra.PTS.Application.Repositories.Implementation
         }
         public async Task<int> SaveChanges()
         {
+            try {
             return await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new ApplicationFunctionException("An error occurred while saving changes to the database.", ex);
+            }
         }
     }
 }

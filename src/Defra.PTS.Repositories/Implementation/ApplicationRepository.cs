@@ -36,12 +36,12 @@ namespace Defra.PTS.Application.Repositories.Implementation
 
         public modelEntity.Application GetApplication(Guid id)
         {
-            return AppContext.Application.Include("Address").Include("PetApplicationStatus").Where(c => c.Id == id).FirstOrDefault()!;
+            return AppContext.Application.Include("Address").Include("PetApplicationStatus").FirstOrDefault(c => c.Id == id)!;
         }
 
         public int DeleteApplication(Guid id)
         {
-            var applicationId = AppContext.Application.Where(c => c.Id == id).FirstOrDefault();
+            var applicationId = AppContext.Application.FirstOrDefault(c => c.Id == id);
             if (applicationId != null)
             {
                 AppContext.Application.Remove(applicationId);

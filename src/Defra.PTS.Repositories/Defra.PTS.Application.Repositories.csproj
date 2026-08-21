@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Defra.PTS.Entities\Defra.PTS.Application.Entities.csproj" />
+    <ProjectReference Include="..\Defra.PTS.Models\Defra.PTS.Application.Models.csproj" />
   </ItemGroup>
 
 </Project>
