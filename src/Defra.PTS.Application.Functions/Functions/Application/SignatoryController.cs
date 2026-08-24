@@ -26,7 +26,7 @@ namespace Defra.PTS.Application.Functions.Application
         private const string ExceptionOccurredMessage = "An exception occurred";
 
         private const string SignatoryNameTagName = "GetSignatoryByName"; 
-        private const string SignatoryIdTagName = "GetSignatoryByName"; 
+        private const string SignatoryIdTagName = "GetSignatoryById"; 
         private const string SignatoryLatestTagName = "GetLatestSignatory";
         private const string SignatoryCurrentTagName = "GetCurrentSignatory";
 

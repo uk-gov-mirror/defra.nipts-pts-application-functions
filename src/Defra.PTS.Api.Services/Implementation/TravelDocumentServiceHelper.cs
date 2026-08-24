@@ -5,15 +5,14 @@ namespace Defra.PTS.Application.Api.Services.Implementation
 {
     public class TravelDocumentServiceHelper : ITravelDocumentServiceHelper
     {
-        string? result = null;
         public string GenerateUniqueAlphaNumericCode(int length)
         {
-            while (result == null || ConditionSatisfied(result))
+            string result;
+            do
             {
-                result = GetUniqueCode(length);                
-            }
-            result = "GB826" + result;
-            return result;
+                result = GetUniqueCode(length);
+            } while (ConditionSatisfied(result));
+            return "GB826" + result;
         }
 
         public static string GetUniqueCode(int length)
@@ -34,10 +33,7 @@ namespace Defra.PTS.Application.Api.Services.Implementation
         
         static bool ConditionSatisfied(string result)
         {
-            if (result.StartsWith("AD") || result.Any(c => c >= 'G' && c <= 'Z'))
-                return true;
-            else
-                return false;
+            return result.StartsWith("AD", StringComparison.Ordinal) || result.Any(c => c >= 'G' && c <= 'Z');
         }
     }
     

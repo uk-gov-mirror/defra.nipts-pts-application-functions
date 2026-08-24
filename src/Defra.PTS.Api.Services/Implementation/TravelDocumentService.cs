@@ -15,29 +15,20 @@ namespace Defra.PTS.Application.Api.Services.Implementation
 
         public async Task<TravelDocument> CreateTravelDocument(modelEntity.Application application)
         {
+            var travelDocumentReference = await _referenceGeneratorService.GetTravelDocumentReference();
 
-            try
+            if (string.IsNullOrEmpty(travelDocumentReference))
             {
-                var travelDocumentReference = await _referenceGeneratorService.GetTravelDocumentReference();
-
-                if (string.IsNullOrEmpty(travelDocumentReference))
-                {
-                    throw new ApplicationFunctionException("Cannot create travel document");
-                }
-
-                var travelDocument = await GetTravelDocumentAsync(application);
-                travelDocument.DocumentReferenceNumber = travelDocumentReference;
-
-                await _travelDocumentRepository.Add(travelDocument);
-                await _travelDocumentRepository.SaveChanges();
-
-                return travelDocument;
+                throw new ApplicationFunctionException("Cannot create travel document");
             }
-            catch (Exception ex)
-            {
-                Console.Write(ex.ToString());
-                throw;
-            }
+
+            var travelDocument = await GetTravelDocumentAsync(application);
+            travelDocument.DocumentReferenceNumber = travelDocumentReference;
+
+            await _travelDocumentRepository.Add(travelDocument);
+            await _travelDocumentRepository.SaveChanges();
+
+            return travelDocument;
         }
 
         public static Task<TravelDocument> GetTravelDocumentAsync(modelEntity.Application application)

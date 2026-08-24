@@ -49,7 +49,7 @@ namespace Defra.PTS.Application.Api.Services.Implementation
 
         public applicationEntity.Application GetApplication(Guid id)
         {
-            _log.LogInformation("Running inside method {0}", "GetApplication");
+            _log.LogInformation("Running inside method {MethodName}", nameof(GetApplication));
             return _applicationRepository.GetApplication(id);
         }
 

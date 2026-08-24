@@ -44,7 +44,7 @@ public class GetUserApplications(IApplicationService applicationService, ILogger
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Applications/UserApplications/{userId}")] HttpRequest req, string userId)
 #pragma warning restore IDE0060 // Remove unused parameter
     {
-        _logger.LogInformation("HTTP trigger function processed a request.",nameof(GetUserApplications));
+        _logger.LogInformation("HTTP trigger function {FunctionName} processed a request.", nameof(GetUserApplications));
 
         if (!Guid.TryParse(userId, out Guid userGuid))
         {

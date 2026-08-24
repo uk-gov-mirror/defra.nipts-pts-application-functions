@@ -61,15 +61,7 @@ namespace Defra.PTS.Application.Repositories.Implementation
             await AppContext.Database.OpenConnectionAsync();
 
             // Check if the connection is open
-            if (AppContext.Database.GetDbConnection().State == ConnectionState.Open)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            return AppContext.Database.GetDbConnection().State == ConnectionState.Open;
         }
     }
 }
